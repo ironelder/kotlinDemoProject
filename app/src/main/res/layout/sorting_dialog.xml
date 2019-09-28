@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/dialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Sorting Oprion"
+        android:textAlignment="center"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+
+    <RadioGroup
+        android:id="@+id/sortGroup"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:layout_constraintTop_toBottomOf="@id/dialogTitle"
+        app:layout_constraintBottom_toTopOf="@id/confirmBtn">
+        <RadioButton android:layout_weight="1"
+            android:text="Title ASC"
+            android:id="@+id/rg_asc"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+        <RadioButton android:layout_weight="1"
+            android:text="DateTime DESC"
+            android:id="@+id/rg_desc"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/confirmBtn"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:text="Confirm"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    <Button
+        android:id="@+id/cancelBtn"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:text="Cancel"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

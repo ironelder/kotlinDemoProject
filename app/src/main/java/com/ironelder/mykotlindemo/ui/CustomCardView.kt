@@ -1,13 +1,18 @@
 package com.ironelder.mykotlindemo.ui
 
 import android.content.Context
+import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.text.HtmlCompat
+import com.bumptech.glide.Glide
 import com.ironelder.mykotlindemo.R
+import com.ironelder.mykotlindemo.common.CARD_TYPE_BLOG
+import com.ironelder.mykotlindemo.common.CARD_TYPE_CAFE
 import com.ironelder.mykotlindemo.dao.DocumentDataVo
 
 class CustomCardView : ConstraintLayout, View.OnClickListener{
@@ -24,6 +29,7 @@ class CustomCardView : ConstraintLayout, View.OnClickListener{
     private val mTitleText:TextView
     private val mDateTimetext:TextView
     private var mPosition:Int = 0
+    private var mType = -1
 
     private lateinit var mActionListener:CustomActionListener
 
@@ -47,8 +53,19 @@ class CustomCardView : ConstraintLayout, View.OnClickListener{
     }
 
     fun setData(dataObj:DocumentDataVo){
-        println(dataObj.cafename)
-        mNameText.text = dataObj.blogname
+        if(dataObj.cafename != null){
+            mLabelImage.setImageResource(R.mipmap.cafe)
+            mNameText.text = dataObj.cafename
+            mType = CARD_TYPE_CAFE
+        } else {
+            mLabelImage.setImageResource(R.mipmap.blog)
+            mNameText.text = dataObj.blogname
+            mType = CARD_TYPE_BLOG
+        }
+
+        mTitleText.text = HtmlCompat.fromHtml(dataObj.title, HtmlCompat.FROM_HTML_MODE_COMPACT)
+        mDateTimetext.text = dataObj.datetime
+        Glide.with(mContext).load(dataObj.thumbnail).into(mThumbnailImage)
     }
 
     fun setPosition(position:Int){

@@ -46,4 +46,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         >
     </androidx.recyclerview.widget.RecyclerView>
+
+
+    <com.ironelder.mykotlindemo.ui.FilterView
+        android:id="@+id/filterBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:layout_constraintTop_toBottomOf="@id/app_toolbar">
+    </com.ironelder.mykotlindemo.ui.FilterView>
 </androidx.constraintlayout.widget.ConstraintLayout>
