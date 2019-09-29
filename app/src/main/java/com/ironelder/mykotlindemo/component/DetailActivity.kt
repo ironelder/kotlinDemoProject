@@ -16,13 +16,11 @@ import com.ironelder.mykotlindemo.dao.DocumentDataVo
 import java.lang.Exception
 import android.content.Intent
 import android.app.Activity
-import android.view.KeyEvent
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import kotlinx.android.synthetic.main.activity_detail.*
 import android.webkit.WebSettings
-
-
+import com.ironelder.mykotlindemo.common.VIEW_TYPE_CARD
 
 
 class DetailActivity: AppCompatActivity() {
@@ -57,6 +55,8 @@ class DetailActivity: AppCompatActivity() {
         }catch (e:Exception){
             findViewById<ImageView>(R.id.detail_thumbnail).setImageResource(vo.getTypeImageResourceId())
         }
+
+        println(CommonUtils.getCustomDateTime("2019-04-17T09:36:37.000+09:00", VIEW_TYPE_CARD))
         findViewById<TextView>(R.id.detail_name).text = vo.getName()
         findViewById<TextView>(R.id.detail_title).text = HtmlCompat.fromHtml(vo.title, HtmlCompat.FROM_HTML_MODE_COMPACT)
         findViewById<TextView>(R.id.detail_content).text = HtmlCompat.fromHtml(vo.contents, HtmlCompat.FROM_HTML_MODE_COMPACT)
@@ -77,6 +77,7 @@ class DetailActivity: AppCompatActivity() {
                 mWebSettings.setSupportZoom(false)
                 mWebSettings.builtInZoomControls = false
                 mWebView.loadUrl(vo.url)
+
             }
         }
     }
