@@ -15,6 +15,7 @@ import com.ironelder.mykotlindemo.R
 import com.ironelder.mykotlindemo.common.CARD_TYPE_BLOG
 import com.ironelder.mykotlindemo.common.CARD_TYPE_CAFE
 import com.ironelder.mykotlindemo.common.CommonUtils
+import com.ironelder.mykotlindemo.common.VIEW_TYPE_CARD
 import com.ironelder.mykotlindemo.dao.DocumentDataVo
 
 class CustomCardView : ConstraintLayout{
@@ -46,7 +47,7 @@ class CustomCardView : ConstraintLayout{
         mTitleText = findViewById(R.id.title)
         mDateTimetext = findViewById(R.id.datetime)
         setOnClickListener { view ->
-            setBackgroundColor(Color.LTGRAY)
+            mActionListener?.onClickItem(mPosition+1, mPosition)
         }
     }
 
@@ -54,12 +55,8 @@ class CustomCardView : ConstraintLayout{
         mActionListener = l
     }
 
-    fun setDimm(){
-        setBackgroundColor(Color.LTGRAY)
-    }
-
     fun setData(dataObj:DocumentDataVo){
-        if(dataObj.cafename != null){
+        if(!dataObj.cafename.isNullOrEmpty() && dataObj.cafename != "null"){
             mLabelImage.setImageResource(R.mipmap.cafe)
             mNameText.text = dataObj.cafename
             mType = CARD_TYPE_CAFE
@@ -70,9 +67,15 @@ class CustomCardView : ConstraintLayout{
         }
 
         mTitleText.text = HtmlCompat.fromHtml(dataObj.title, HtmlCompat.FROM_HTML_MODE_COMPACT)
-        mDateTimetext.text = CommonUtils.getCustomDateTime(dataObj.datetime)
+        mDateTimetext.text = CommonUtils.getCustomDateTime(dataObj.datetime, VIEW_TYPE_CARD)
 
-        Glide.with(mContext).load(dataObj.thumbnail).into(mThumbnailImage)
+        Glide.with(mContext).load(dataObj.thumbnail).override(400, 400).placeholder(dataObj.getTypeImageResourceId()).into(mThumbnailImage)
+
+        if(dataObj.isRead){
+            setBackgroundColor(Color.LTGRAY)
+        } else {
+            setBackgroundColor(Color.WHITE)
+        }
     }
 
     fun setPosition(position:Int){

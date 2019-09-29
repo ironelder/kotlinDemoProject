@@ -1,9 +1,9 @@
-package com.ironelder.mykotlindemo
+package com.ironelder.mykotlindemo.component
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +12,10 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
-import androidx.annotation.NonNull
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ironelder.mykotlindemo.common.*
-import com.ironelder.mykotlindemo.component.SortingDialog
 import com.ironelder.mykotlindemo.dao.DataVo
 import com.ironelder.mykotlindemo.dao.DocumentDataVo
 import com.ironelder.mykotlindemo.ui.CustomCardView
@@ -26,6 +23,12 @@ import com.ironelder.mykotlindemo.ui.FilterView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.app.Activity
+import androidx.core.view.size
+import com.ironelder.mykotlindemo.R
+
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -127,6 +130,20 @@ class MainActivity : AppCompatActivity() {
             }
             callRetrofitService()
             hideKeybaord(view)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                200 -> {
+                    var position = data?.getIntExtra("Position", 0)?:0
+                    mItemArrayList[position].isRead = true
+                    mRecyclerView.adapter?.notifyItemChanged(position+1)
+                }
+            }
         }
     }
 
@@ -234,6 +251,7 @@ class MainActivity : AppCompatActivity() {
                 holder = CustomItemHolder(view)
 
             }
+
             return holder
         }
 
@@ -249,6 +267,7 @@ class MainActivity : AppCompatActivity() {
             return mItemArrayList?.size + 1
         }
 
+
         fun setFilter(items :ArrayList<DocumentDataVo>) {
             mItemArrayList.clear()
             mItemArrayList.addAll(items)
@@ -260,6 +279,15 @@ class MainActivity : AppCompatActivity() {
                 var dataDto = mItemArrayList[position-1]
                 holder.setData(dataDto)
                 holder.setViewPosition(position-1)
+                holder.setActionListener(object : CustomCardView.CustomActionListener{
+                    override fun onClickItem(itemPosition: Int, itemId: Int) {
+                        var detailIntent:Intent = Intent(this@MainActivity, DetailActivity::class.java)
+                        detailIntent.putExtra("detailData", dataDto)
+                        detailIntent.putExtra("Position", itemPosition)
+                        detailIntent.putExtra("ItemId", itemId)
+                        startActivityForResult(detailIntent, 200)
+                    }
+                })
             } else {
                 val headerViewHolder = holder as HeaderViewHolder
             }
@@ -275,6 +303,9 @@ class MainActivity : AppCompatActivity() {
             }
             fun setViewPosition(p:Int){
                 holderCustomListItem.setPosition(p)
+            }
+            fun setActionListener(l:CustomCardView.CustomActionListener){
+                holderCustomListItem.setCustomActionListener(l)
             }
         }
         inner class HeaderViewHolder:RecyclerView.ViewHolder{
