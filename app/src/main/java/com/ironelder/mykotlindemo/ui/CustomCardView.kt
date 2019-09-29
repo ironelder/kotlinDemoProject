@@ -1,6 +1,7 @@
 package com.ironelder.mykotlindemo.ui
 
 import android.content.Context
+import android.graphics.Color
 import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -13,12 +14,10 @@ import com.bumptech.glide.Glide
 import com.ironelder.mykotlindemo.R
 import com.ironelder.mykotlindemo.common.CARD_TYPE_BLOG
 import com.ironelder.mykotlindemo.common.CARD_TYPE_CAFE
+import com.ironelder.mykotlindemo.common.CommonUtils
 import com.ironelder.mykotlindemo.dao.DocumentDataVo
 
-class CustomCardView : ConstraintLayout, View.OnClickListener{
-    override fun onClick(v: View?) {
-
-    }
+class CustomCardView : ConstraintLayout{
 
     private val mContext:Context
     private var mIsRead:Boolean
@@ -46,10 +45,17 @@ class CustomCardView : ConstraintLayout, View.OnClickListener{
         mNameText = findViewById(R.id.name)
         mTitleText = findViewById(R.id.title)
         mDateTimetext = findViewById(R.id.datetime)
+        setOnClickListener { view ->
+            setBackgroundColor(Color.LTGRAY)
+        }
     }
 
     fun setCustomActionListener(l:CustomActionListener){
         mActionListener = l
+    }
+
+    fun setDimm(){
+        setBackgroundColor(Color.LTGRAY)
     }
 
     fun setData(dataObj:DocumentDataVo){
@@ -64,7 +70,8 @@ class CustomCardView : ConstraintLayout, View.OnClickListener{
         }
 
         mTitleText.text = HtmlCompat.fromHtml(dataObj.title, HtmlCompat.FROM_HTML_MODE_COMPACT)
-        mDateTimetext.text = dataObj.datetime
+        mDateTimetext.text = CommonUtils.getCustomDateTime(dataObj.datetime)
+
         Glide.with(mContext).load(dataObj.thumbnail).into(mThumbnailImage)
     }
 

@@ -3,12 +3,15 @@ package com.ironelder.mykotlindemo
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ListView
 import androidx.annotation.NonNull
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -31,6 +34,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mOriginItemArrayList:ArrayList<DocumentDataVo>
     private lateinit var mItemArrayList:ArrayList<DocumentDataVo>
+    private lateinit var mSearchHistorys:ArrayList<String>
+    private lateinit var mSearchHistoryListView: ListView
+
     private var mIsBlogDataEnd = false
     private var mIsCafeDataEnd = false
     private var mBlogPage = 1
@@ -46,6 +52,17 @@ class MainActivity : AppCompatActivity() {
 
         mOriginItemArrayList = ArrayList()
         mItemArrayList = ArrayList()
+        mSearchHistorys = SharedPreferenceAPI.getStringArrayPref(applicationContext, "searchHistory")
+        mSearchHistoryListView = findViewById(R.id.searchHistory)
+        mSearchHistoryListView.adapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_list_item_1, mSearchHistorys)
+        mSearchHistoryListView.setOnItemClickListener { parent, view, position, id ->
+            mQueryString = (parent as ListView).getItemAtPosition(position) as String
+            mSearchEditText.setText(mQueryString)
+            setSearchInit()
+            mSearchEditText.clearFocus()
+            callRetrofitService()
+            hideKeybaord(view)
+        }
 
         mFilterBar = findViewById(R.id.filterBar)
         mFilterBar.setFilterActionListener(object : FilterView.FilterActionListener{
@@ -67,10 +84,10 @@ class MainActivity : AppCompatActivity() {
                                 mSortType = sortType
                                 println(sortType)
                                 println(mItemArrayList.get(0).title)
-                                if(sortType == SORT_TYPE_TITLE_ASC){
-                                    mItemArrayList.sortBy { obj -> obj.title }
+                                mItemArrayList = if(sortType == SORT_TYPE_TITLE_ASC){
+                                    ArrayList(mItemArrayList.sortedBy { it.title })
                                 }else{
-                                    mItemArrayList.sortByDescending { obj -> obj.datetime }
+                                    ArrayList(mItemArrayList.sortedByDescending { it.datetime })
                                 }
                                 mRecyclerView.adapter?.notifyDataSetChanged()
                                 println(mItemArrayList.get(0).title)
@@ -92,13 +109,30 @@ class MainActivity : AppCompatActivity() {
         addRecyclerViewScrollListener()
 
         mSearchEditText = findViewById(R.id.search_view)
+        mSearchEditText.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                mSearchHistoryListView.visibility = View.VISIBLE
+            } else {
+                mSearchHistoryListView.visibility = View.GONE
+            }
+        }
         mSearchButton = findViewById(R.id.search_btn)
         mSearchButton.setOnClickListener { view ->
             setSearchInit()
+            mSearchEditText.clearFocus()
             mQueryString = mSearchEditText.text.toString()
+            if(!mSearchHistorys.contains(mQueryString)){
+                mSearchHistorys.add(mQueryString)
+                SharedPreferenceAPI.setStringArrayPref(applicationContext, "searchHistory", mSearchHistorys)
+            }
             callRetrofitService()
             hideKeybaord(view)
         }
+    }
+
+    private fun getSorting(array:ArrayList<DocumentDataVo> , sortType:Int):ArrayList<DocumentDataVo>{
+        array.sortBy {  obj -> obj.title }
+        return ArrayList()
     }
 
     private fun addRecyclerViewScrollListener(){

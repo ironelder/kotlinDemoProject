@@ -55,4 +55,16 @@
         android:background="@color/colorPrimary"
         app:layout_constraintTop_toBottomOf="@id/app_toolbar">
     </com.ironelder.mykotlindemo.ui.FilterView>
+
+    <ListView
+        android:id="@+id/searchHistory"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginRight="56dp"
+        android:background="@color/colorWhite"
+        android:divider="@color/cardViewDimm"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/app_toolbar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
