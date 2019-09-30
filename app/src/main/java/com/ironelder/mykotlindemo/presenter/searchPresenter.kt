@@ -1,9 +1,6 @@
 package com.ironelder.mykotlindemo.presenter
 
-class searchPresenter:searchPresenterContract {
-    override fun searchBlog(queryData: String) {
-    }
-
-    override fun searchCafe(queryData: String) {
+class searchPresenter:searchContract.searchPresenterContract {
+    override fun searchForKakao(type: String, page: Int, queryData: String) {
     }
 }
