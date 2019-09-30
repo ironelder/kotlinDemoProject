@@ -147,11 +147,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getSorting(array:ArrayList<DocumentDataVo> , sortType:Int):ArrayList<DocumentDataVo>{
-        array.sortBy {  obj -> obj.title }
-        return ArrayList()
-    }
-
     private fun addRecyclerViewScrollListener(){
         mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView:RecyclerView, dx:Int, dy:Int){
@@ -226,17 +221,6 @@ class MainActivity : AppCompatActivity() {
         inputMethodManager?.hideSoftInputFromWindow(v.applicationWindowToken, 0)
     }
 
-    private fun filter(searchItemList:List<DocumentDataVo>, filterType:Int):ArrayList<DocumentDataVo> {
-        var filteredList:ArrayList<DocumentDataVo> = ArrayList()
-        for (searchItem in searchItemList) {
-            if(searchItem.getType() == filterType){
-                filteredList.add(searchItem)
-            }
-        }
-        return filteredList
-    }
-
-
     private inner class CustomRecyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             var view:View
@@ -265,13 +249,6 @@ class MainActivity : AppCompatActivity() {
 
         override fun getItemCount(): Int {
             return mItemArrayList?.size + 1
-        }
-
-
-        fun setFilter(items :ArrayList<DocumentDataVo>) {
-            mItemArrayList.clear()
-            mItemArrayList.addAll(items)
-            notifyDataSetChanged()
         }
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
