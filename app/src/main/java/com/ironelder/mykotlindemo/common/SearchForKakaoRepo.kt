@@ -13,12 +13,7 @@ class SearchForKakaoRepo {
         this.searchForKakaoApi = searchForKakaoApi
     }
 
-    fun searchForKakao(
-        type: String,
-        page: Int,
-        query: String,
-        callback: CallbackListener
-    ) {
+    fun searchForKakao(type: String, page: Int, query: String, callback: CallbackListener) {
         val call = searchForKakaoApi.requestSearchForKakao(type, page, 25, query)
         call.enqueue(object : retrofit2.Callback<DataVo> {
             override fun onResponse(call: Call<DataVo>, response: Response<DataVo>) {
