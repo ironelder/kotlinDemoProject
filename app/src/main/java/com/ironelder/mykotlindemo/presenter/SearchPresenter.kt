@@ -21,10 +21,10 @@ class SearchPresenter:SearchContract.searchPresenterContract, SearchForKakaoRepo
     }
 
 
-    override fun successResponse(response: Response<DataVo>) {
+    override fun successResponse(response: Response<DataVo>, type:String) {
         if(response.isSuccessful){
             var dataVo: DataVo? = response.body()
-            viewContract.searchResults(dataVo?.documents?:ArrayList<DocumentDataVo>(), dataVo?.meta?.is_end?:true)
+            viewContract.searchResults(dataVo?.documents?:ArrayList<DocumentDataVo>(), dataVo?.meta?.is_end?:true, type)
         } else {
             viewContract.searchError("${response.code()} - ${response.message()}")
         }

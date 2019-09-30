@@ -26,11 +26,32 @@ import retrofit2.Response
 import android.app.Activity
 import androidx.core.view.size
 import com.ironelder.mykotlindemo.R
+import com.ironelder.mykotlindemo.presenter.SearchContract
+import com.ironelder.mykotlindemo.presenter.SearchPresenter
 
 
+class MainActivity : AppCompatActivity(),SearchContract.searchViewContract {
+    override fun searchResults(searchResult: List<DocumentDataVo>, isEnd: Boolean, type:String) {
+        if(type == "blog"){
+            println("blog")
+            mIsBlogDataEnd = isEnd
+            mBlogPage++
+        }
+        if(type == "cafe"){
+            println("cafe")
+            mIsCafeDataEnd = isEnd
+            mCafePage++
+        }
 
+        mItemArrayList.addAll(searchResult)
+        mRecyclerView.adapter?.notifyDataSetChanged()
+    }
 
-class MainActivity : AppCompatActivity() {
+    override fun searchError() {
+    }
+
+    override fun searchError(errMsg: String) {
+    }
 
     private lateinit var mSearchEditText:EditText
     private lateinit var mSearchButton:Button
@@ -49,9 +70,15 @@ class MainActivity : AppCompatActivity() {
     private var mFilterType:String = "All"
     private var mSortType:Int = SORT_TYPE_TITLE_ASC
 
+    private lateinit var mSearchPresenter:SearchPresenter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        var searchForKakaoRepo:SearchForKakaoRepo = SearchForKakaoRepo(RetrofitForKakao.getSearchForKakaoService())
+        mSearchPresenter = SearchPresenter(this, searchForKakaoRepo)
+
 
         mOriginItemArrayList = ArrayList()
         mItemArrayList = ArrayList()
@@ -175,43 +202,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun callRetrofitService(){
-        if(!mIsBlogDataEnd && (mFilterType.contains("All") || mFilterType.contains("Blog"))){
-            RetrofitForKakao.getSearchService().
-                requestSearchForKakao(type = "blog", page = mBlogPage, query = mQueryString).enqueue(object : Callback<DataVo> {
-                override fun onFailure(call: Call<DataVo>, t: Throwable) {
-                    println("Fail5 ${t.message}")
-                }
-
-                override fun onResponse(call: Call<DataVo>, response: Response<DataVo>) {
-                    if (response.isSuccessful) {
-                        val blogDataVo = response.body()
-                        mIsBlogDataEnd = blogDataVo?.meta?.is_end?:true
-                        mItemArrayList.addAll(blogDataVo?.documents as ArrayList<DocumentDataVo>)
-                        mRecyclerView.adapter?.notifyDataSetChanged()
-                        mBlogPage++
-                    }
-                }
-
-            })
+        if(!mIsBlogDataEnd && (mFilterType.contains("All")||mFilterType.contains("Blog"))){
+            mSearchPresenter.searchForKakao("blog",mBlogPage,mQueryString)
         }
-
-        if(!mIsCafeDataEnd && (mFilterType.contains("All") || mFilterType.contains("Cafe"))){
-            RetrofitForKakao.getSearchService().
-                requestSearchForKakao(type = "cafe", page = mCafePage, query = mQueryString).enqueue(object : Callback<DataVo> {
-                override fun onFailure(call: Call<DataVo>, t: Throwable) {
-                    println("Fail5 ${t.message}")
-                }
-
-                override fun onResponse(call: Call<DataVo>, response: Response<DataVo>) {
-                    if (response.isSuccessful) {
-                        val cafeDataVo = response.body()
-                        mIsCafeDataEnd = cafeDataVo?.meta?.is_end?:true
-                        mItemArrayList.addAll(cafeDataVo?.documents as ArrayList<DocumentDataVo>)
-                        mRecyclerView.adapter?.notifyDataSetChanged()
-                        mCafePage++
-                    }
-                }
-            })
+        if(!mIsCafeDataEnd && (mFilterType.contains("All")||mFilterType.contains("Cafe"))) {
+            mSearchPresenter.searchForKakao("cafe",mCafePage,mQueryString)
         }
     }
 

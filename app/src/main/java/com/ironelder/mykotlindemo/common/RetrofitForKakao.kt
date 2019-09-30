@@ -13,6 +13,8 @@ object RetrofitForKakao {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
+    fun getSearchForKakaoService():SearchForKakaoApi = mRetrofit.create(SearchForKakaoApi::class.java)
+
     fun getSearchService(): SearchForKakao = mRetrofit.create(SearchForKakao::class.java)
 
     interface SearchForKakao{

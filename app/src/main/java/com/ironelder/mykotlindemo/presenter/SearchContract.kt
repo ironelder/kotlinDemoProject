@@ -2,9 +2,9 @@ package com.ironelder.mykotlindemo.presenter
 
 import com.ironelder.mykotlindemo.dao.DocumentDataVo
 
-interface SearchContract {
+open interface SearchContract {
     interface searchViewContract{
-        fun searchResults(searchResult:List<DocumentDataVo>, isEnd:Boolean)
+        fun searchResults(searchResult:List<DocumentDataVo>, isEnd:Boolean, type:String)
         fun searchError()
         fun searchError(errMsg:String)
     }

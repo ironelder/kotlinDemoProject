@@ -17,7 +17,7 @@ class SearchForKakaoRepo {
         val call = searchForKakaoApi.requestSearchForKakao(type, page, 25, query)
         call.enqueue(object : retrofit2.Callback<DataVo> {
             override fun onResponse(call: Call<DataVo>, response: Response<DataVo>) {
-                callback.successResponse(response)
+                callback.successResponse(response, type)
             }
 
             override fun onFailure(call: Call<DataVo>, t: Throwable) {
@@ -27,7 +27,7 @@ class SearchForKakaoRepo {
     }
 
     interface CallbackListener{
-        fun successResponse(response:Response<DataVo>)
+        fun successResponse(response:Response<DataVo>, type:String)
         fun errorResponse()
     }
 }
